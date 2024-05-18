@@ -29,6 +29,7 @@ for item in likedTracks["items"]:
 
 
 credentials_file = "youtube_credentials.json"
+
 if os.path.exists(credentials_file):
     flow = InstalledAppFlow.from_client_secrets_file(
         credentials_file, scopes=["https://www.googleapis.com/auth/youtube"]
