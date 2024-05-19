@@ -19,13 +19,25 @@ sp = spotipy.Spotify(
     )
 )
 
-likedTracks = sp.current_user_saved_tracks()
 spotifySongs = []
+offset = 0
+limit = 50
 
-for item in likedTracks["items"]:
-    track = item["track"]
-    print(track["name"], "-", track["artists"][0]["name"])
-    spotifySongs.append(track["name"] + " " + track["artists"][0]["name"])
+while True:
+    likedTracks = sp.current_user_saved_tracks(limit=limit, offset=offset)
+
+    if not likedTracks["items"]:
+        break
+
+    for item in likedTracks["items"]:
+        track = item["track"]
+        print(track["name"], "-", track["artists"][0]["name"])
+        spotifySongs.append(track["name"] + " " + track["artists"][0]["name"])
+
+    offset += limit
+
+
+print(f"A total of {len(spotifySongs)} has been fetched")
 
 
 credentials_file = "youtube_credentials.json"
@@ -35,8 +47,6 @@ if os.path.exists(credentials_file):
         credentials_file, scopes=["https://www.googleapis.com/auth/youtube"]
     )
     credentials = flow.run_local_server()
-    with open(credentials_file, "w") as f:
-        f.write(credentials.to_json())
 else:
     credentials = os.environ.get("YOUTUBE_OAUTH2_CREDENTIALS")
     if credentials:
